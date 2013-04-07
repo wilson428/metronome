@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="src/css/normalize.css">
+        <link rel="stylesheet" href="src/css/main.css">
+        <script src="src/js/vendor/modernizr-2.6.2.min.js"></script>
+        <style>
+.main {
+    width: 900px;
+    margin: 5px;
+    padding: 10px;
+}
+
+#canvas {
+    border: 1px solid #CCC;
+    width: 900px;
+    height: 300px;
+}
+
+#tempo {
+    width: 50px;
+    text-align: center;
+}
+
+#ticks {
+    width: 50px;
+    text-align: center;
+}
+
+body {
+    font-size: 12px;
+}
+        </style>
+    </head>
+    <body>
+        <!-- Add your site or application content here -->
+        <div class="main">
+            <div id="canvas"></div>
+            <table>
+                <tr><td>tempo</td><td>ticks</td><td></td></tr>
+                <tr>
+                    <td><input id="tempo" value='100' /></td>
+                    <td><input id="ticks" value='20' /></td>
+                    <td><input type="button" id="startstop" value="start"/></td>
+                </tr>                
+            </table>
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="src/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+        <script src="src/js/plugins.js"></script>
+        <script src="src/js/main.js"></script>
+        <script src="src/js/vendor/raphael-2.1.0.min.js"></script>
+        <script src="src/js/vendor/SoundManager2/script/soundmanager2.js"></script>
+        <script>
+/*global $ Raphael soundManager*/
+var paper = Raphael("canvas", 800, 300),
+    tick_count;
+
+soundManager.setup({
+  url: 'src/js/vendor/SoundManager2/swf',
+  flashVersion: 9, // optional: shiny features (default = 8)// optional: ignore Flash where possible, use 100% HTML5 mode
+  // preferFlash: false,
+  onready: function() {
+    soundManager.createSound({
+      id: 'tick',
+      url: 'src/img/tick.wav'
+    });
+    
+    function tick(obj) {      
+        //Raphael summons the callback on each of the three objects in the set, so we
+        //have to only call the sound once per iteration by associating it with one of the objects.
+        //doesn't matter which one
+        if (obj.data("id") === "arm") {
+            tick_count += 1;
+            soundManager.play('tick');            
+        }
+        return tick_count;
+    }    
+    init(tick);
+  }
+});
+
+var metronome = function(l, r) {
+    l = typeof l !== "undefined" ? l : 200; // length of metronome arm
+    r = typeof r !== "undefined" ? r : 20; //max angle from upright 
+    var y0 = l * Math.cos(Math.PI * r / 180);    
+    var x0 = l * Math.sin(Math.PI * r / 180);    
+    var y = l + 10;
+    var x = x0 + 10;    
+    
+    var outline = paper.path("M"+x+","+y+"l-"+x0+",-"+y0+"a"+l+","+l+" "+2*r+" 0,1 "+2*x0+",0L"+x+","+y).attr({
+        fill: "#EEF",
+        'stroke-width': 0    
+    });
+    
+    var arm = paper.path("M" + x + "," + y + "v-" + l).attr({
+        'stroke-width': 5,
+        stroke: "#999"
+    }).data("id", "arm");
+        
+    var weight = paper.path("M" + x + "," + (y-100) + "h12l-3,18h-18l-3-18h12").attr({
+        'stroke-width': 0,
+        fill: '#666'
+    }).data("id", "weight");
+
+    var vertex = paper.circle(x, y, 7).attr({
+        'stroke-width': 0,
+        fill: '#CCC'
+    }).data("id", "vertex");
+
+    var label = paper.text(x, y + 20, "").attr({
+        "text-anchor": "center",
+        "font-size": 14
+    });
+
+    var mn = paper.set(arm, weight);
+    
+	Raphael.easing_formulas.sinoid = function(n) { return Math.sin(Math.PI * n / 2) };
+
+    return {
+        start: function(tempo, repeats, sound) {
+            tick_count = 0;
+            //weight.animate({ transform: "T0,-" + (tempo - 30) + "..." }, 500, function() {
+                mn.attr("transform", "R-20 " + x + "," + y);                
+                var interval = 120000 / tempo;            
+                var ticktock = Raphael.animation({
+                    "50%": { transform:"R20 " + x + "," + y, easing: "sinoid", callback: function() { label.attr("text", sound(this)); }},
+                    "100%": { transform:"R-20 " + x + "," + y, easing: "sinoid", callback: function() { label.attr("text", sound(this)); }}
+                }, interval).repeat(repeats / 2);
+                arm.animate(ticktock);
+                weight.animateWith(arm, ticktock, ticktock);            
+            //});
+        },
+        stop: function() {
+            mn.stop();
+            //weight.attr({ transform: "T0,-" + (tempo - 30) + "..." });
+            mn.attr("transform", "R0 " + x + "," + y);
+        }
+    };
+    
+};
+
+
+function init(sound) {
+    var m = metronome(200, 20);
+    
+    $('#startstop').click(function() {
+        if ($(this).val() === "start") {
+            $(this).val("stop");            
+            var tempo = parseInt($('#tempo').val(), 10);
+            if (!tempo) { tempo = 60; }
+            else if (tempo > 200) { tempo = 200; }
+            else if (tempo < 30) { tempo = 30; }
+            $("#tempo").val(tempo);
+            
+            var ticks = parseInt($('#ticks').val(), 10);
+            if (!ticks) { ticks = 20; }
+            else if (ticks > 60) { ticks = 60; }
+            else if (ticks < 8) { ticks = 8; }
+            $("#ticks").val(ticks);
+            
+            m.start(tempo, ticks, sound);
+        } else {
+            $(this).val("start");
+            m.stop();
+        }        
+    });
+}
+        </script>
+    </body>
+</html>
