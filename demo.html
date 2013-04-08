@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Javascript Metronome</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <style>
+body {
+    font-size: 12px;
+}
+        
+.main {
+    width: 900px;
+    margin: 5px;
+    padding: 10px;
+}
+
+#canvas {
+    border: 1px solid #CCC;
+    width: 900px;
+    height: 300px;
+    margin-bottom: 5px;
+}
+
+input[type=text] {
+    width: 40px;
+    text-align: center;
+}
+
+input[type=button] {
+    height: 24px;
+}
+        </style>
+    </head>
+    <body>
+            <div id="canvas"></div>
+            <span>tempo: </span><input type="text" id="tempo" value='100' />
+            <span>ticks: </span><input type="text" id="ticks" value='20' />
+            <input type="button" id="startstop" value="start" />
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="src/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+        <script src="src/js/vendor/raphael-2.1.0.min.js"></script>
+        <script src="src/js/vendor/metronome.js"></script>
+        <script>
+/*global $ Raphael soundManager metronome*/
+var paper = Raphael("canvas", 900, 300);
+
+function done() {
+    alert("Done!");
+}
+
+function tick() {
+    console.log("Tick");
+}
+
+var m = metronome({
+    len: 200,
+    angle: 20,
+    paper: paper,
+    tick: tick,
+    complete: done,
+    path: "src/js/vendor/metronome/"
+});
+
+$('#startstop').click(function() {
+    // start animation
+    if ($(this).val() === "start") {
+        $(this).val("stop");            
+        
+        //get values for tempo and ticks and restrict
+        var tempo = parseInt($('#tempo').val(), 10);
+        if (!tempo) { tempo = 60; }
+        else if (tempo > 200) { tempo = 200; }
+        else if (tempo < 30) { tempo = 30; }
+        $("#tempo").val(tempo);
+        
+        var ticks = parseInt($('#ticks').val(), 10);
+        if (!ticks) { ticks = 20; }
+        else if (ticks > 60) { ticks = 60; }
+        else if (ticks < 8) { ticks = 8; }
+        $("#ticks").val(ticks); 
+
+        m.start(tempo, ticks);
+    } else {
+        $(this).val("start");
+        m.stop();
+    }
+});
+        </script>
+    </body>
+</html>
