@@ -11,7 +11,7 @@ var metronome = function(opts) {
         
     // initialize audio
     var sound = document.createElement('audio');
-    sound.setAttribute('src', 'src/img/tick.wav');
+    sound.setAttribute('src', 'src/audio/tick.wav');
     sound.setAttribute('id', 'tick');
     document.body.appendChild(sound);
     
@@ -73,9 +73,13 @@ var metronome = function(opts) {
     }    
 
     return {
-        start: function(interval, repeats) {
+        start: function(tempo, repeats) {
             tick_count = 0;
             mn.attr("transform", "R-20 " + x + "," + y);                
+            
+            //2 iterations per animation * 60000 ms per minute / tempo
+            var interval = 120000 / tempo;
+            
             //animation            
             var ticktock = Raphael.animation({
                 "50%": { transform:"R20 " + x + "," + y, easing: "sinoid", callback: function() { tick(this, repeats, done); }},

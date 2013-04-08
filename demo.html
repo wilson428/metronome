@@ -13,18 +13,11 @@
 body {
     font-size: 12px;
 }
-        
-.main {
-    width: 900px;
-    margin: 5px;
-    padding: 10px;
-}
 
 #canvas {
     border: 1px solid #CCC;
-    width: 900px;
+    width: 300px;
     height: 300px;
-    margin-bottom: 5px;
 }
 
 input[type=text] {
@@ -38,18 +31,17 @@ input[type=button] {
         </style>
     </head>
     <body>
-            <div id="canvas"></div>
-            <span>tempo: </span><input type="text" id="tempo" value='100' />
-            <span>ticks: </span><input type="text" id="ticks" value='20' />
-            <input type="button" id="startstop" value="start" />
-        </div>
+		<div id="canvas"></div>
+		<span>tempo: </span><input type="text" id="tempo" value='100' />
+		<span>ticks: </span><input type="text" id="ticks" value='20' />
+		<input type="button" id="startstop" value="start" />
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="src/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
-        <script src="src/js/vendor/raphael-2.1.0.min.js"></script>
-        <script src="src/js/vendor/metronome.js"></script>
+        <script src="src/js/raphael-2.1.0.min.js"></script>
+        <script src="src/js/metronome.js"></script>
         <script>
 /*global $ Raphael soundManager metronome*/
-var paper = Raphael("canvas", 900, 300);
+var paper = Raphael("canvas", 300, 300);
 
 function done() {
     alert("Done!");
