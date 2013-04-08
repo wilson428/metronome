@@ -37,8 +37,8 @@ input[type=button] {
 		<input type="button" id="startstop" value="start" />
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="src/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
-        <script src="src/js/raphael-2.1.0.min.js"></script>
-        <script src="src/js/metronome.js"></script>
+        <script src="raphael-2.1.0.min.js"></script>
+        <script src="metronome.js"></script>
         <script>
 /*global $ Raphael soundManager metronome*/
 var paper = Raphael("canvas", 300, 300);
@@ -57,7 +57,7 @@ var m = metronome({
     paper: paper,
     tick: tick,
     complete: done,
-    path: "src/js/vendor/metronome/"
+    path: ""
 });
 
 $('#startstop').click(function() {

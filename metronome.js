@@ -7,11 +7,12 @@ var metronome = function(opts) {
         tick_func = typeof opts.tick !== "undefined" ? opts.tick : function() {}, //function to call with each tick
         end_func = typeof opts.complete !== "undefined" ? opts.complete : function() {}, //function to call on completion
         paper = typeof opts.paper !== "undefined" ? opts.paper : Raphael(0, 0, opts.l + 50, opts.l + 50), //function to call on completion
+        path_to_audio = typeof opts.path !== "undefined" ? opts.path : "audio/", //function to call on completion
         playSound = typeof opts.sound !== "undefined" ? opts.sound : true //function to call on completion
         
     // initialize audio
     var sound = document.createElement('audio');
-    sound.setAttribute('src', 'src/audio/tick.wav');
+    sound.setAttribute('src', path_to_audio + 'tick.wav');
     sound.setAttribute('id', 'tick');
     document.body.appendChild(sound);
     
