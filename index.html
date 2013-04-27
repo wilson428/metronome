@@ -10,51 +10,71 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
         <style>
-body {
-    font-size: 12px;
+.example {
+	font-family: Arial;
+	font-size: 12px;
 }
 
-#canvas {
-    border: 1px solid #CCC;
-    width: 300px;
-    height: 300px;
+.status {
+	width: 100px;
+	height: 200px;
+	padding: 10px;
+	overflow-y: auto;
+	border: 2px solid #CCC;
 }
 
-input[type=text] {
-    width: 40px;
-    text-align: center;
+.metr_input {
+   width: 40px;
+   margin-right: 10px;
+   text-align: center;
 }
 
-input[type=button] {
-    height: 24px;
+#count {
+	width: 50px;
+	display: inline-block;
+	text-align: right;
 }
         </style>
     </head>
     <body>
-		<div id="canvas"></div>
-		<span>tempo: </span><input type="text" id="tempo" value='100' />
-		<span>ticks: </span><input type="text" id="ticks" value='20' />
-		<input type="button" id="startstop" value="start" />
+    	<table class="example">
+    		<tr>
+    			<td><div id="metronome_container"></div></td>
+    			<td><div class="status"></div></td>
+    		</tr>
+    		<tr>
+    			<td colspan=2>
+					<div id="inputs">
+						 <span>tempo: </span>
+						 <input class="metr_input" type="text" id="tempo" value='100' />
+						 <span>ticks: </span>
+						 <input class="metr_input" type="text" id="ticks" value='10' />
+						 <button id="startstop">start</button>
+						 <div id="count">0</div>
+					</div>
+				</td>
+			</tr>
+		</table>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="src/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
-        <script src="raphael-2.1.0.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
         <script src="metronome.js"></script>
         <script>
 /*global $ Raphael soundManager metronome*/
-var paper = Raphael("canvas", 300, 300);
 
-function done() {
-    alert("Done!");
+function tick(t) {
+    $("<div />").html(t % 2 === 1 ? "Tick" : "Tock").appendTo(".status");
+	$("#count").html(t);    
 }
 
-function tick() {
-    console.log("Tick");
+function done() {
+    $("<div />").html("Done!").appendTo(".status");
+    $("#startstop").html("start");
 }
 
 var m = metronome({
     len: 200,
     angle: 20,
-    paper: paper,
+    paper: "metronome_container",
     tick: tick,
     complete: done,
     path: ""
@@ -62,8 +82,8 @@ var m = metronome({
 
 $('#startstop').click(function() {
     // start animation
-    if ($(this).val() === "start") {
-        $(this).val("stop");            
+    if ($(this).html() === "start") {
+        $(this).html("stop");            
         
         //get values for tempo and ticks and restrict
         var tempo = parseInt($('#tempo').val(), 10);
@@ -78,9 +98,11 @@ $('#startstop').click(function() {
         else if (ticks < 8) { ticks = 8; }
         $("#ticks").val(ticks); 
 
+        //console.log(tempo, ticks);
+        
         m.start(tempo, ticks);
     } else {
-        $(this).val("start");
+        $(this).html("start");
         m.stop();
     }
 });

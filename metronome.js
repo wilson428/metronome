@@ -2,19 +2,18 @@
 
 var metronome = function(opts) {
     //primary variables
-    var l = typeof opts.l !== "undefined" ? opts.l : 200, // length of metronome arm
-        r = typeof opts.r !== "undefined" ? opts.r : 20, //max angle from upright 
+    var l = typeof opts.len !== "undefined" ? opts.len : 200, // length of metronome arm
+        r = typeof opts.angle !== "undefined" ? opts.angle : 20, //max angle from upright 
+    	w = 2 * l * Math.cos(r),
         tick_func = typeof opts.tick !== "undefined" ? opts.tick : function() {}, //function to call with each tick
         end_func = typeof opts.complete !== "undefined" ? opts.complete : function() {}, //function to call on completion
         path_to_audio = typeof opts.path !== "undefined" ? opts.path : "audio/", //function to call on completion
         playSound = typeof opts.sound !== "undefined" ? opts.sound : true; //function to call on completion
 
-	switch(typeof opts.paper) {
-		case "string": paper = Raphael(opts.paper, opts.l + 50, opts.l + 50); break;
-		default: paper = Raphael(0, 0, opts.l + 50, opts.l + 50); break;
-	}
-	
-	console.log(paper);
+    switch(typeof opts.paper) {
+		case "string": paper = Raphael(opts.paper, w, l + 20); break;
+		default: paper = Raphael(0, 0, w, l + 20); break;
+    }
     
     // initialize audio
     var sound = document.createElement('audio');
@@ -68,9 +67,7 @@ var metronome = function(opts) {
                 document.getElementById("tick").play();
             }        
             
-            label.attr("text", tick_count);    
-            
-            tick_func();
+            tick_func(tick_count);
             
             if (tick_count >= repeats) {
                 mn.attr("transform", "R0 " + x + "," + y);    
