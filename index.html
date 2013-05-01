@@ -20,7 +20,13 @@
 	height: 200px;
 	padding: 10px;
 	overflow-y: auto;
-	border: 2px solid #CCC;
+}
+
+.statusline {
+	font-size: 10px;
+	background-color: #E0E0E0;
+	margin: 3px 0;
+	padding: 2px;
 }
 
 .metr_input {
@@ -48,7 +54,7 @@
 						 <span>tempo: </span>
 						 <input class="metr_input" type="text" id="tempo" value='100' />
 						 <span>ticks: </span>
-						 <input class="metr_input" type="text" id="ticks" value='10' />
+						 <input class="metr_input" type="text" id="ticks" value='8' />
 						 <button id="startstop">start</button>
 						 <div id="count">0</div>
 					</div>
@@ -62,12 +68,12 @@
 /*global $ Raphael soundManager metronome*/
 
 function tick(t) {
-    $("<div />").html(t % 2 === 1 ? "Tick" : "Tock").appendTo(".status");
+    $("<div />").html(t % 2 === 1 ? "Tick" : "Tock").addClass("statusline").appendTo(".status");
 	$("#count").html(t);    
 }
 
 function done() {
-    $("<div />").html("Done!").appendTo(".status");
+    $("<div />").html("Done!").addClass("statusline").css("background-color", "#FFFF99").appendTo(".status");
     $("#startstop").html("start");
 }
 
@@ -77,8 +83,11 @@ var m = metronome({
     paper: "metronome_container",
     tick: tick,
     complete: done,
-    path: ""
+    audio: "https://github.com/wilson428/metronome/blob/master/tick.wav?raw=true"
 });
+
+m.shapes().outline.attr("fill", "#00A30F");
+m.shapes().arm.attr("stroke", "#EEE");
 
 $('#startstop').click(function() {
     // start animation
@@ -97,8 +106,6 @@ $('#startstop').click(function() {
         else if (ticks > 60) { ticks = 60; }
         else if (ticks < 8) { ticks = 8; }
         $("#ticks").val(ticks); 
-
-        //console.log(tempo, ticks);
         
         m.start(tempo, ticks);
     } else {
