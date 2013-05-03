@@ -58,7 +58,7 @@ var metronome = function(opts) {
     
     Raphael.easing_formulas.sinoid = function(n) { return Math.sin(Math.PI * n / 2) };
 
-    function tick(obj, repeats, callback) {      
+    function tick(obj, repeats) {      
         //Raphael summons the callback on each of the three objects in the set, so we
         //have to only call the sound once per iteration by associating it with one of the objects.
         //doesn't matter which one
@@ -86,7 +86,7 @@ var metronome = function(opts) {
             var interval = 120000 / tempo;
 
 			var animationDone = function() { 
-				tick(this, repeats, done); 
+				tick(this, repeats); 
 			};
 			
             var ticktockAnimationParam = {

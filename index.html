@@ -77,12 +77,14 @@ function done() {
     $("#startstop").html("start");
 }
 
+var paper = Raphael("metronome_container", 200, 200);
+
 var m = metronome({
     len: 200,
     angle: 20,
-    paper: "metronome_container",
     tick: tick,
     complete: done,
+    paper: paper,
     audio: "https://github.com/wilson428/metronome/blob/master/tick.wav?raw=true"
 });
 
