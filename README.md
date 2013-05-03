@@ -45,3 +45,8 @@ You can interrupt the execution with:
     m.stop()
 
 At fast tempos, the weight occasionally gets disconnected from the metronome's arm. I addressed this issue with Raphael's ```.animateWith()``` function [on Stack Overflow][2], but I'm not convinced the accepted answer is complete.
+
+You can invoke the ```.start()``` and ```.stop()``` functions any way you like, but as a shortcut you can create a pair of inputs for the tempo and tick number and create a start/stop button with one function:
+
+	m.make_input()
+	

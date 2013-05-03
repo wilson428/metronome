@@ -66,10 +66,8 @@ var metronome = function(opts) {
             tick_count += 1;
             if (playSound) {    
                 document.getElementById("tick").play();
-            }        
-            
-            tick_func(tick_count);
-            
+            }
+            tick_func(tick_count);            
             if (tick_count >= repeats) {
                 mn.attr("transform", "R0 " + x + "," + y);    
                 end_func();
@@ -111,6 +109,42 @@ var metronome = function(opts) {
         		weight: weight,
         		vertex: vertex        	
         	}
+        },
+        make_input: function(el) {
+        	$("<div />", {
+        		html: 	"<span>tempo: </span>" + 
+        				"<input class='metr_input' type='text' id='tempo' value='100' />" +
+						"<span>ticks: </span>" +
+						"<input class='metr_input' type='text' id='ticks' value='8' />" +
+						"<button id='startstop'>start</button>" +
+						"<div id='count'>0</div>"
+        	}).appendTo(el);
+        	
+			$('#startstop').click(function() {
+				// start animation
+				if ($(this).html() === "start") {
+					$(this).html("stop");            
+					
+					//get values for tempo and ticks and restrict
+					var tempo = parseInt($('#tempo').val(), 10);
+					if (!tempo) { tempo = 60; }
+					else if (tempo > 200) { tempo = 200; }
+					else if (tempo < 30) { tempo = 30; }
+					$("#tempo").val(tempo);
+					
+					var ticks = parseInt($('#ticks').val(), 10);
+					if (!ticks) { ticks = 20; }
+					else if (ticks > 60) { ticks = 60; }
+					else if (ticks < 8) { ticks = 8; }
+					$("#ticks").val(ticks); 
+					
+					m.start(tempo, ticks);
+				} else {
+					$(this).html("start");
+					m.stop();
+				}
+			});        	
+        	        
         }
     };
 };
