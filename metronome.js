@@ -85,7 +85,7 @@ var metronome = function(opts) {
             }
             
             tick_count = 0;
-            mn.attr("transform", "R-20 " + x + "," + y);                
+            mn.attr("transform", "R-" + r + " " + x + "," + y);                
             
             //2 iterations per animation * 60000 ms per minute / tempo
             var interval = 120000 / tempo;
@@ -95,8 +95,8 @@ var metronome = function(opts) {
 			};
 			
             var ticktockAnimationParam = {
-                "50%": { transform:"R20 " + x + "," + y, easing: "sinoid", callback: animationDone },
-                "100%": { transform:"R-20 " + x + "," + y, easing: "sinoid", callback: animationDone }
+                "50%": { transform:"R" + r + " " + x + "," + y, easing: "sinoid", callback: animationDone },
+                "100%": { transform:"R-" + r + " " + x + "," + y, easing: "sinoid", callback: animationDone }
             };
             
             //animation            
