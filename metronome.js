@@ -10,7 +10,7 @@ var metronome = function(opts) {
 	// initialize Raphael paper if need be        
     switch(typeof opts.paper) {
 		case "string": paper = Raphael(opts.paper, w, l + 20); break;
-		default: paper = Raphael(0, 0, w, l + 20); break;
+        case "undefined": paper = Raphael(0, 0, w, l + 20); break;
     }
 
 	// initialize audio if need be
@@ -76,7 +76,14 @@ var metronome = function(opts) {
     }    
 
     return {
-        start: function(tempo, repeats) {
+        start: function(tempo, repeats, tickf, donef) {
+            if (tickf) {
+                tick_func = tickf;
+            }
+            if (donef) {
+                end_func = donef;
+            }
+            
             tick_count = 0;
             mn.attr("transform", "R-20 " + x + "," + y);                
             
@@ -143,8 +150,7 @@ var metronome = function(opts) {
 					$(this).html("start");
 					m.stop();
 				}
-			});        	
-        	        
+			});        	      	        
         }
     };
 };
