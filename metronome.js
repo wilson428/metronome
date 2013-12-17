@@ -76,7 +76,7 @@ var metronome = function(opts) {
     }    
 
     return {
-        start: function(tempo, repeats, tickf, donef) {
+        start: function(tempo = 120, repeats = Infinity, tickf, donef) {
             if (tickf) {
                 tick_func = tickf;
             }
