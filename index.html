@@ -13,6 +13,8 @@
 .example {
 	font-family: Arial;
 	font-size: 12px;
+	table-layout: fixed;
+    width: 100%;
 }
 
 .status {
@@ -40,13 +42,27 @@
 	display: inline-block;
 	text-align: right;
 }
+
+
+tr {
+
+text-align: center;
+vertical-align: middle;
+
+}
+
+td {
+
+width: 100%;
+
+}
         </style>
     </head>
     <body>
     	<table class="example">
     		<tr>
     			<td><div id="metronome_container"></div></td>
-    			<td><div class="status"></div></td>
+    			<!--<td><div class="status"></div></td>-->
     		</tr>
     		<tr>
     			<td colspan=2 id="inputs"></td>
